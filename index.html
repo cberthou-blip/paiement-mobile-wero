@@ -1777,7 +1777,7 @@
 
 
     function isModuleAvailable(idx) {
-      if (idx === 0) return appState.progress.warningAccepted;
+      if (idx === 0) return true;
       return appState.progress.completedModules.includes(idx - 1);
     }
 
