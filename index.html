@@ -7,8 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
   <style>
     /* === VARIABLES === */
     :root {
@@ -1055,28 +1054,16 @@
       <h1 class="home-hero-title">Paiement Mobile<br>et Wero en France</h1>
       <p class="home-hero-desc">Une formation interactive pour comprendre les usages, technologies et bonnes pratiques du paiement mobile en France.</p>
       <div class="home-meta">
-        <span class="home-tag">5 modules</span>
+        <span class="home-tag">6 modules</span>
         <span class="home-tag">Gratuit</span>
-        <span class="home-tag">Certifiant</span>
       </div>
     </div>
 
     <div class="wrapper">
       <div class="card mt-16">
         <div class="home-form-section">
-          <p class="home-form-title">Commencer la formation</p>
-          <div class="form-group">
-            <label class="form-label" for="input-prenom">Votre prenom</label>
-            <input type="text" id="input-prenom" class="form-input" placeholder="Ex : Marie" autocomplete="given-name">
-            <span class="form-error" id="err-prenom">Veuillez saisir votre prenom.</span>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="input-email">Votre adresse email</label>
-            <input type="email" id="input-email" class="form-input" placeholder="Ex : marie@email.com" autocomplete="email">
-            <span class="form-error" id="err-email">Veuillez saisir une adresse email valide.</span>
-          </div>
           <button class="btn btn-primary btn-full" id="btn-start">
-            <span>Commencer la formation</span>
+            <span>Commencer →</span>
           </button>
         </div>
         <div class="home-footer">
@@ -1282,24 +1269,9 @@
     // ====================================================
     // FIREBASE CONFIG (sera mise a jour avec les vraies valeurs)
     // ====================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyAUY1Rgy-CLymxb_LwIFKqwUi9rbp20cE8",
-      authDomain: "paiement-mobile-wero.firebaseapp.com",
-      projectId: "paiement-mobile-wero",
-      storageBucket: "paiement-mobile-wero.firebasestorage.app",
-      messagingSenderId: "643910675196",
-      appId: "1:643910675196:web:2970d7fbd80014c70d4579"
-    };
-
-    let db = null;
-    try {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
-    } catch(e) {
-      console.warn('Firebase non configure, stockage local uniquement.', e);
-    }
-
-    // ====================================================
+    
+        var db = null;
+      // ====================================================
     // DONNEES : MODULES & QUIZ
     // ====================================================
     const MODULES = [
@@ -1790,36 +1762,19 @@
       }
     };
 
-    function saveProgress() {
-      localStorage.setItem('wero_progress', JSON.stringify(appState.progress));
-      if (db && appState.user && appState.user.email) {
-        const docId = appState.user.email.replace(/[^a-zA-Z0-9]/g, '_');
-        db.collection('userProgress').doc(docId).set({
-          email: appState.user.email,
-          prenom: appState.user.prenom,
-          completedModules: appState.progress.completedModules,
-          quizScores: appState.progress.quizScores,
-          points: appState.progress.points || 0,
-          badges: appState.progress.badges || [],
-          lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-        }).catch(function(e) { console.warn('Firestore:', e); });
-      }
-    }
+    
+  function saveProgress() {
+    localStorage.setItem('wero_progress', JSON.stringify(appState.progress));
+  }
 
-    function loadProgress() {
-      const saved = localStorage.getItem('wero_progress');
-      if (saved) {
-        try {
-          appState.progress = JSON.parse(saved);
-        } catch(e) {}
-      }
-      const savedUser = localStorage.getItem('wero_user');
-      if (savedUser) {
-        try {
-          appState.user = JSON.parse(savedUser);
-        } catch(e) {}
-      }
+  function loadProgress() {
+    var saved = localStorage.getItem('wero_progress');
+    if (saved) {
+      try { appState.progress = JSON.parse(saved); } catch(e) {}
     }
+  }
+
+
 
     function isModuleAvailable(idx) {
       if (idx === 0) return appState.progress.warningAccepted;
@@ -1845,50 +1800,12 @@
     // ====================================================
     // ECRAN : ACCUEIL
     // ====================================================
-    document.getElementById('btn-start').addEventListener('click', function() {
-      const prenom = document.getElementById('input-prenom').value.trim();
-      const email = document.getElementById('input-email').value.trim();
-      let valid = true;
+      document.getElementById('btn-start').addEventListener('click', function() {
+    renderModulesMenu();
+    showScreen('modules');
+  });
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      if (!prenom) {
-        document.getElementById('err-prenom').classList.add('visible');
-        document.getElementById('input-prenom').classList.add('error');
-        valid = false;
-      } else {
-        document.getElementById('err-prenom').classList.remove('visible');
-        document.getElementById('input-prenom').classList.remove('error');
-      }
-
-      if (!email || !emailRegex.test(email)) {
-        document.getElementById('err-email').classList.add('visible');
-        document.getElementById('input-email').classList.add('error');
-        valid = false;
-      } else {
-        document.getElementById('err-email').classList.remove('visible');
-        document.getElementById('input-email').classList.remove('error');
-      }
-
-      if (!valid) return;
-
-      appState.user = { prenom, email, createdAt: new Date().toISOString() };
-      localStorage.setItem('wero_user', JSON.stringify(appState.user));
-
-      // Enregistrement Firebase
-      if (db) {
-        db.collection('registrations').add({
-          prenom,
-          email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          userAgent: navigator.userAgent
-        }).catch(function(e) {
-          console.warn('Erreur Firebase :', e);
-        });
-      }
-
-      showScreen('warning');
-    });
 
     // ====================================================
     // ECRAN : MISE EN GARDE
@@ -2266,119 +2183,17 @@
     // ====================================================
     // PANNEAU ADMIN
     // ====================================================
-    function loadAdminData() {
-      if (!db) {
-        document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Firebase non configuré.</td></tr>';
-        return;
-      }
-      Promise.all([
-        db.collection('registrations').orderBy('createdAt','desc').limit(200).get(),
-        db.collection('userProgress').get()
-      ]).then(function(results) {
-        const regSnap = results[0], progSnap = results[1];
-        const progress = {};
-        progSnap.forEach(function(doc) { progress[doc.data().email] = doc.data(); });
-        const rows = [];
-        regSnap.forEach(function(doc) { rows.push(doc.data()); });
+    
 
-        // Stats
-        const totalMods = rows.reduce(function(acc, r) {
-          const p = progress[r.email];
-          return acc + (p ? (p.completedModules || []).length : 0);
-        }, 0);
-        const statsEl = document.getElementById('admin-stats');
-        if (statsEl) {
-          statsEl.innerHTML =
-            '<div class="admin-stat"><div class="admin-stat-n">' + rows.length + '</div><div class="admin-stat-l">Inscrits</div></div>' +
-            '<div class="admin-stat"><div class="admin-stat-n">' + Object.keys(progress).length + '</div><div class="admin-stat-l">Actifs</div></div>' +
-            '<div class="admin-stat"><div class="admin-stat-n">' + (rows.length ? Math.round(totalMods/rows.length*10)/10 : 0) + '</div><div class="admin-stat-l">Modules moy.</div></div>';
-        }
+          function init() {
+    loadProgress();
+    showScreen('home');
+  }
 
-        // Tableau
-        if (!rows.length) {
-          document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Aucun inscrit pour l\'instant.</td></tr>';
-          return;
-        }
-        let html = '';
-        rows.forEach(function(r) {
-          const p = progress[r.email] || {};
-          const mods = (p.completedModules || []).length;
-          const scores = p.quizScores || {};
-          const total = Object.values(scores).reduce(function(a,b){ return a+b; }, 0);
-          const xp = p.points || 0;
-          const date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR') : '-';
-          html += '<tr><td>' + (r.prenom||'-') + '</td><td style="font-size:.75rem">' + (r.email||'-') + '</td><td style="font-size:.75rem">' + date + '</td>' +
-            '<td><span class="admin-pill">' + mods + ' / ' + MODULES.length + '</span></td>' +
-            '<td>' + (Object.keys(scores).length ? total + ' pts' : '-') + '</td>' +
-            '<td>' + (xp ? xp + ' XP' : '-') + '</td></tr>';
-        });
-        document.getElementById('admin-tbody').innerHTML = html;
-      }).catch(function(e) {
-        document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Erreur : ' + e.message + '</td></tr>';
-      });
-    }
-
-        function init() {
-      // Panneau admin via ?admin=wero2025
-      if (window.location.search.indexOf('admin=wero2025') > -1) {
-        showScreen('admin');
-        loadAdminData();
-        return;
-      }
-
-      loadProgress();
-
-      // Si l'utilisateur est déjà enregistré et a accepté la mise en garde, aller au menu
-      if (appState.user && appState.progress.warningAccepted) {
-        renderModulesMenu();
-        showScreen('modules');
-        return;
-      }
-
-      // Si enregistre mais pas encore la mise en garde
-      if (appState.user && !appState.progress.warningAccepted) {
-        showScreen('warning');
-        return;
-      }
-
-      // Sinon, accueil
-      showScreen('home');
-    }
 
     init();
   </script>
 
   <!-- ===================== SCREEN: ADMIN ===================== -->
-  <div id="screen-admin" class="screen">
-    <div class="site-header">
-      <div class="wrapper">
-        <div>
-          <div class="site-header-logo">Administration</div>
-          <div class="site-header-sub">Suivi des apprenants</div>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="showScreen('home')" style="font-size:.8rem;padding:6px 14px">&#8592; Retour</button>
-      </div>
-    </div>
-    <div class="admin-wrap">
-      <div id="admin-stats" class="admin-stats"></div>
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Prénom</th>
-              <th>Email</th>
-              <th>Inscription</th>
-              <th>Modules</th>
-              <th>Score total</th>
-              <th>XP</th>
-            </tr>
-          </thead>
-          <tbody id="admin-tbody">
-            <tr><td colspan="6" class="admin-msg">Chargement…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
