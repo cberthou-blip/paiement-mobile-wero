@@ -999,6 +999,46 @@
         justify-content: flex-end;
       }
     }
+
+    /* === GAMIFICATION === */
+    .xp-banner{background:linear-gradient(135deg,var(--primary) 0%,#0066cc 100%);color:#fff;padding:14px 20px;border-radius:var(--radius-md);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .xp-left{flex:1}.xp-label{font-size:.75rem;opacity:.85;letter-spacing:.3px}
+    .xp-value{font-size:1.4rem;font-weight:700;line-height:1.2}
+    .xp-bar-wrap{width:100%;height:5px;background:rgba(255,255,255,.3);border-radius:3px;margin-top:6px}
+    .xp-bar-fill{height:100%;background:#fff;border-radius:3px;transition:width .6s ease}
+    .badges-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px 18px;margin-bottom:18px}
+    .badges-label{font-size:.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+    .badges-grid{display:flex;gap:6px;flex-wrap:wrap}
+    .badge-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:16px;font-size:.78rem;font-weight:600;border:1px solid transparent}
+    .badge-chip.earned{background:var(--success-bg);color:var(--success);border-color:var(--success-border)}
+    .badge-chip.locked{background:#f5f5f5;color:#bbb;border-color:#e8e8e8;filter:grayscale(1);opacity:.7}
+    .badge-earned-box{background:linear-gradient(135deg,#f0fff4,#e6fffa);border:2px solid var(--success-border);border-radius:var(--radius-md);padding:18px;margin:14px 0;text-align:center}
+    .badge-earned-icon{font-size:2.4rem;line-height:1}
+    .badge-earned-lbl{font-size:.75rem;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 4px}
+    .badge-earned-name{font-size:1rem;font-weight:700;color:var(--text)}
+    .xp-gained{display:inline-block;background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:12px;font-size:.85rem;font-weight:700;margin-top:8px}
+    /* === NAVIGATION SECTIONS === */
+    .section-nav-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:56px;z-index:10}
+    .section-counter{font-size:.82rem;font-weight:600;color:var(--text-muted)}
+    .section-dots{display:flex;gap:5px;align-items:center}
+    .section-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s;cursor:pointer}
+    .section-dot.active{background:var(--primary);transform:scale(1.3)}
+    .section-dot.done{background:var(--success)}
+    .section-btn-row{display:flex;gap:10px;justify-content:space-between;padding:16px 20px 20px;background:var(--surface);border-top:1px solid var(--border);margin-top:auto}
+    /* === ADMIN === */
+    .admin-wrap{max-width:760px;margin:0 auto;padding:24px 16px}
+    .admin-stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .admin-stat{flex:1;min-width:110px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;text-align:center}
+    .admin-stat-n{font-size:1.8rem;font-weight:700;color:var(--primary);line-height:1}
+    .admin-stat-l{font-size:.75rem;color:var(--text-muted);margin-top:4px}
+    .admin-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:auto}
+    .admin-table{width:100%;border-collapse:collapse;font-size:.82rem}
+    .admin-table th{background:var(--primary-light);color:var(--primary);font-weight:700;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+    .admin-table td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+    .admin-table tr:last-child td{border-bottom:none}
+    .admin-table tr:hover td{background:var(--primary-light)}
+    .admin-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;background:var(--success-bg);color:var(--success)}
+    .admin-msg{text-align:center;padding:40px;color:var(--text-muted);font-style:italic}
   </style>
 </head>
 <body>
@@ -1195,10 +1235,11 @@
             <p class="result-message" id="result-message"></p>
           </div>
 
-          <div class="answers-summary" id="answers-summary"></div>
+          <div id="badge-earned-area"></div>
+        <div class="answers-summary" id="answers-summary"></div>
 
           <div class="result-actions">
-            <button class="btn btn-outline" id="btn-retry-quiz">Recommencer le quiz</button>
+            <button class="btn btn-outline" id="btn-retry-quiz">Refaire le quiz</button>
             <button class="btn btn-primary" id="btn-next-module">Module suivant</button>
           </div>
         </div>
@@ -1211,8 +1252,8 @@
     <div class="site-header">
       <div class="wrapper">
         <div>
-          <div class="site-header-logo">Formation completee</div>
-          <div class="site-header-sub">Toutes felicitations</div>
+          <div class="site-header-logo">Formation complétée</div>
+          <div class="site-header-sub">Toutes nos félicitations</div>
         </div>
       </div>
     </div>
@@ -1265,36 +1306,36 @@
       {
         id: 1,
         title: "Le paiement mobile en France",
-        subtitle: "Vue d'ensemble, chiffres cles et acteurs du marche",
-        shortDesc: "Introduction et panorama du marche",
+        subtitle: "Vue d'ensemble, chiffres clés et acteurs du marché",
+        shortDesc: "Introduction et panorama du marché",
         sections: [
           {
             title: "Qu'est-ce que le paiement mobile ?",
             content: [
-              "Le paiement mobile designe l'ensemble des transactions financieres realisees via un smartphone ou une tablette. Il recouvre plusieurs usages distincts : le paiement en point de vente via la technologie sans contact, le virement entre particuliers (P2P), et le paiement en ligne depuis une application.",
-              "En France, cette pratique a connu une croissance significative depuis 2020. La pandemie de Covid-19 a massivement accelere l'adoption du paiement sans contact, modifiant durablement les comportements des consommateurs et des commercants.",
+              "Le paiement mobile désigne l'ensemble des transactions financières réalisées via un smartphone ou une tablette. Il recouvre plusieurs usages distincts : le paiement en point de vente via la technologie sans contact, le virement entre particuliers (P2P), et le paiement en ligne depuis une application.",
+              "En France, cette pratique a connu une croissance significative depuis 2020. La pandémie de Covid-19 a massivement accéléré l'adoption du paiement sans contact, modifiant durablement les comportements des consommateurs et des commercants.",
               "Le paiement mobile n'est pas uniquement une affaire de technologie : il transforme la relation entre le consommateur, sa banque et les commercants."
             ]
           },
           {
-            title: "Le marche francais en chiffres",
+            title: "Le marché français en chiffres",
             content: [
-              "Selon la Banque de France, les paiements sans contact ont represente plus de 60 % des transactions par carte en 2023. La France figure parmi les pays europeens les plus avances en matiere d'adoption du paiement sans contact.",
-              "Le virement instantane SEPA progresse fortement : en 2023, il representait environ 20 % des virements en France, avec une adoption attendue en forte hausse suite au reglement europeen de 2024 rendant les virements instantanes obligatoires a tarifs comparables.",
-              "Plus d'un Francais sur deux possede une application de paiement mobile ou utilise regulierement le paiement sans contact via son smartphone."
+              "Selon la Banque de France, les paiements sans contact ont représente plus de 60 % des transactions par carte en 2023. La France figure parmi les pays européens les plus avancés en matière d'adoption du paiement sans contact.",
+              "Le virement instantané SEPA progresse fortement : en 2023, il représentait environ 20 % des virements en France, avec une adoption attendue en forte hausse suite au règlement européen de 2024 rendant les virements instantanés obligatoires à tarifs comparables.",
+              "Plus d'un Français sur deux possède une application de paiement mobile ou utilise régulièrement le paiement sans contact via son smartphone."
             ],
-            infoBox: "La limite de paiement sans contact sans saisie du code PIN est fixee a 50 euros en France depuis mai 2020, relevee depuis les 30 euros initiaux."
+            infoBox: "La limite de paiement sans contact sans saisie du code PIN est fixée à 50 euros en France depuis mai 2020, relevée depuis les 30 euros initiaux."
           },
           {
-            title: "Les acteurs du marche",
+            title: "Les acteurs du marché",
             content: [
-              "Le marche du paiement mobile en France est structure autour de plusieurs types d'acteurs complementaires :",
+              "Le marche du paiement mobile en France est structuré autour de plusieurs types d'acteurs complémentaires :",
             ],
             list: [
               "Les banques traditionnelles via leurs applications mobiles (BNP Paribas, Societe Generale, Credit Agricole, La Banque Postale, etc.)",
-              "Les fintechs specialisees dans les paiements (Lydia/Sumeria, PayPal, Revolut)",
-              "Les geants technologiques avec leurs portefeuilles numeriques (Apple Pay, Google Pay, Samsung Pay)",
-              "Wero, la solution interbancaire europeenne dediee aux virements entre particuliers"
+              "Les fintechs spécialisées dans les paiements (Lydia/Sumeria, PayPal, Revolut)",
+              "Les géants technologiques avec leurs portefeuilles numériques (Apple Pay, Google Pay, Samsung Pay)",
+              "Wero, la solution interbancaire européenne dédiée aux virements entre particuliers"
             ]
           },
           {
@@ -1387,7 +1428,7 @@
             explanation: "NFC signifie Near Field Communication, soit Communication en champ proche. C'est la technologie qui permet les paiements sans contact."
           },
           {
-            q: "En combien de temps maximum s'effectue un virement SEPA instantane ?",
+            q: "En combien de temps maximum s'effectue un virement SEPA instantané ?",
             options: ["1 heure", "24 heures", "10 secondes", "1 minute"],
             correct: 2,
             explanation: "Le virement SEPA instantane (SCT Inst) est credite sur le compte du beneficiaire en moins de 10 secondes, disponible 24h/24 et 7j/7."
@@ -1406,7 +1447,7 @@
           },
           {
             q: "Quel est l'avantage principal du paiement par QR Code par rapport au NFC ?",
-            options: ["Il est plus rapide", "Il ne necessite pas de puce NFC cote commercant", "Il est plus securise", "Il permet des montants plus eleves"],
+            options: ["Il est plus rapide", "Il ne nécessite pas de puce NFC côté commerçant", "Il est plus securise", "Il permet des montants plus eleves"],
             correct: 1,
             explanation: "Le QR Code ne necessite pas de puce NFC sur le terminal du commercant, ce qui le rend accessible aux petits commerces et aux contextes ou l'installation d'un TPE NFC est complexe."
           }
@@ -1568,9 +1609,9 @@
       },
       {
         id: 5,
-        title: "Securite et bonnes pratiques",
-        subtitle: "DSP2, mecanismes de protection, prevention de la fraude",
-        shortDesc: "Securiser ses paiements et reagir en cas de probleme",
+        title: "Sécurité et bonnes pratiques",
+        subtitle: "DSP2, mécanismes de protection, prévention de la fraude",
+        shortDesc: "Sécuriser ses paiements et réagir en cas de problème",
         sections: [
           {
             title: "Les mecanismes de securite de Wero",
@@ -1631,7 +1672,7 @@
             explanation: "En cas de vol, il faut agir immediatement : bloquer la carte SIM aupres de votre operateur et bloquer Wero ainsi que les paiements mobiles aupres de votre banque."
           },
           {
-            q: "Laquelle de ces pratiques est absolument deconseillée ?",
+            q: "Laquelle de ces pratiques est absolument déconseillée ?",
             options: ["Activer les notifications de transaction", "Verifier le numero du destinataire avant d'envoyer", "Communiquer son code PIN pour qu'un proche effectue un paiement a sa place", "Utiliser la biometrie pour valider les paiements"],
             correct: 2,
             explanation: "Le code PIN est strictement confidentiel. Le communiquer, meme a un proche, constitue une negligence grave au sens de la DSP2 et peut engager votre responsabilite en cas de fraude."
@@ -1643,7 +1684,90 @@
             explanation: "Wero est une solution bancaire reglementee, beneficiant de la supervision de l'ACPR, des garanties des depots et des mecanismes de recours propres au secteur bancaire."
           }
         ]
-      }
+      },
+      {
+        id: 6,
+        title: "L'avenir de Wero et du paiement mobile",
+        subtitle: "Expansion européenne, e-commerce et enjeux 2025-2027",
+        shortDesc: "Roadmap, défis et perspectives du paiement instantané en Europe",
+        sections: [
+          {
+            title: "L'expansion européenne de Wero",
+            content: [
+              "Lancé en France et en Allemagne en juillet 2023, puis en Belgique en 2024, Wero porte l'ambition de l'EPI (European Payments Initiative), un consortium de 20 grandes banques européennes. L'objectif est de couvrir l'ensemble de la zone euro d'ici 2027.",
+              "L'interopérabilité transfrontalière est au cœur du projet : un utilisateur belge peut envoyer de l'argent à un Français via Wero, sans friction ni frais supplémentaires. Cette fluidité pan-européenne est un atout décisif face aux solutions américaines.",
+              "D'autres pays sont en cours d'intégration : les Pays-Bas, l'Autriche, le Luxembourg et potentiellement l'Espagne, l'Italie et le Portugal à horizon 2026-2027. Chaque nouvelle banque participante renforce la masse critique indispensable au succès du projet."
+            ]
+          },
+          {
+            title: "Wero et les commerçants : la deuxième phase",
+            content: [
+              "Le déploiement de Wero suit trois phases stratégiques. La Phase 1 (déjà active) couvre les paiements entre particuliers (P2P) : envois instantanés entre amis, famille, remboursements du quotidien.",
+              "La Phase 2, en cours depuis 2024, concerne le paiement e-commerce. Sur les sites marchands partenaires, les clients paient en saisissant leur numéro de téléphone puis en confirmant dans leur application bancaire. Cette phase est cruciale pour la montée en puissance de Wero.",
+              "La Phase 3, prévue à partir de 2025-2026, porte sur le paiement en point de vente physique (NFC et QR Code). Wero se positionnera alors en alternative directe à la carte bancaire chez les commerçants, avec l'ambition de réduire les frais d'interchange élevés des réseaux Visa et Mastercard."
+            ],
+            infoBox: "Les frais d'interchange Visa / Mastercard représentent 0,3 % à 1,5 % du montant de chaque transaction pour les commerçants. Wero vise à réduire significativement ce coût, estimé à plusieurs milliards d'euros par an pour le commerce européen."
+          },
+          {
+            title: "Les défis de la souveraineté numérique",
+            content: [
+              "L'enjeu de Wero dépasse la simple commodité des paiements : il s'agit d'un projet de souveraineté numérique européenne. Les paiements par carte en Europe sont dominés à plus de 65 % par les réseaux américains Visa et Mastercard, dont les algorithmes et les données échappent au contrôle européen.",
+              "Face à eux, Apple Pay et Google Pay captent une part croissante des paiements mobiles sans contact, créant une dépendance vis-à-vis des plateformes technologiques américaines. Wero est la réponse européenne à cette double dépendance.",
+              "La Banque Centrale Européenne (BCE) soutient activement le projet, tout en développant en parallèle l'euro numérique (CBDC — Central Bank Digital Currency), une monnaie numérique de banque centrale qui pourrait à terme compléter Wero."
+            ]
+          },
+          {
+            title: "Les tendances du paiement mobile 2025-2027",
+            content: [
+              "L'intelligence artificielle s'intègre de plus en plus dans les systèmes de paiement : détection de fraude en temps réel, analyse comportementale, personnalisation des offres. Les banques investissent massivement dans l'IA pour sécuriser et enrichir l'expérience de paiement.",
+              "Le règlement eIDAS 2.0, entré en application en 2024, impose à chaque État membre de proposer un portefeuille d'identité numérique européen (European Digital Identity Wallet). Ce portefeuille permettra d'authentifier les paiements et de stocker documents officiels et titres de transport.",
+              "Le BNPL (Buy Now Pay Later), encadré par la directive européenne sur le crédit aux consommateurs (2023), favorise les acteurs bancaires réglementés face aux fintechs moins contrôlées. Les paiements en objets connectés (montres, voitures, réfrigérateurs) représentent également un marché en pleine émergence."
+            ]
+          }
+        ],
+        quiz: [
+          {
+            q: "Que signifie l'acronyme EPI dans le contexte de Wero ?",
+            options: ["European Payment Index", "European Payments Initiative", "Euro Payment Integration", "Electronic Payments Infrastructure"],
+            correct: 1,
+            explanation: "L'EPI (European Payments Initiative) est le consortium de 20 grandes banques européennes qui développe et déploie Wero à l'échelle européenne."
+          },
+          {
+            q: "Quelle est la Phase 2 du déploiement de Wero ?",
+            options: ["Les paiements entre particuliers (P2P)", "Le paiement e-commerce sur sites marchands", "Le paiement en point de vente physique", "Le paiement international hors zone euro"],
+            correct: 1,
+            explanation: "La Phase 2 concerne le déploiement de Wero comme moyen de paiement sur les sites e-commerce partenaires, permettant de payer par numéro de téléphone sans carte bancaire."
+          },
+          {
+            q: "Quel est le principal enjeu stratégique de Wero pour l'Europe ?",
+            options: ["Remplacer les espèces", "Réduire la dépendance aux réseaux de paiement américains", "Éliminer les banques traditionnelles", "Concurrencer les cryptomonnaies"],
+            correct: 1,
+            explanation: "Wero est un projet de souveraineté numérique européenne : réduire la dépendance vis-à-vis de Visa, Mastercard, Apple Pay et Google Pay en proposant une alternative bancaire européenne interopérable."
+          },
+          {
+            q: "Que prévoit le règlement eIDAS 2.0 pour les paiements ?",
+            options: ["L'interdiction des paiements mobiles", "La création d'un portefeuille d'identité numérique européen", "La fusion de Wero avec PayPal", "L'obligation d'utiliser la carte bancaire"],
+            correct: 1,
+            explanation: "eIDAS 2.0 impose à chaque État membre de fournir un portefeuille d'identité numérique (European Digital Identity Wallet) utilisable pour authentifier les paiements."
+          },
+          {
+            q: "Quel avantage Wero offre-t-il aux commerçants face à la carte bancaire ?",
+            options: ["Les paiements sont plus lents", "Des frais de transaction potentiellement réduits par rapport aux frais d'interchange Visa / Mastercard", "Wero ne fonctionne que pour les achats en ligne", "Les remboursements sont impossibles avec Wero"],
+            correct: 1,
+            explanation: "Les frais d'interchange Visa / Mastercard représentent 0,3 % à 1,5 % par transaction. Wero vise à proposer une alternative moins coûteuse pour les commerçants, ce qui est un argument commercial fort."
+          }
+        ]
+      },
+
+    ];
+
+    const BADGES = [
+      { icon: '🏅', name: 'Initié Paiement' },
+      { icon: '⚡', name: 'Expert Technologies' },
+      { icon: '🌍', name: 'Ambassadeur Wero' },
+      { icon: '💳', name: 'Praticien Wero' },
+      { icon: '🛡️', name: 'Gardien Sécurité' },
+      { icon: '🚀', name: 'Visionnaire' }
     ];
 
     // ====================================================
@@ -1654,7 +1778,9 @@
       progress: {
         warningAccepted: false,
         completedModules: [],
-        quizScores: {}
+        quizScores: {},
+        points: 0,
+        badges: []
       },
       currentModuleIndex: 0,
       currentQuiz: {
@@ -1666,6 +1792,18 @@
 
     function saveProgress() {
       localStorage.setItem('wero_progress', JSON.stringify(appState.progress));
+      if (db && appState.user && appState.user.email) {
+        const docId = appState.user.email.replace(/[^a-zA-Z0-9]/g, '_');
+        db.collection('userProgress').doc(docId).set({
+          email: appState.user.email,
+          prenom: appState.user.prenom,
+          completedModules: appState.progress.completedModules,
+          quizScores: appState.progress.quizScores,
+          points: appState.progress.points || 0,
+          badges: appState.progress.badges || [],
+          lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(e) { console.warn('Firestore:', e); });
+      }
     }
 
     function loadProgress() {
@@ -1775,18 +1913,32 @@
     function renderModulesMenu() {
       const list = document.getElementById('modules-list');
       const count = appState.progress.completedModules.length;
-      document.getElementById('progress-badge').textContent = count + ' / 5';
+      document.getElementById('progress-badge').textContent = count + ' / ' + MODULES.length;
 
       if (appState.user) {
         document.getElementById('header-user-name').textContent = 'Bonjour, ' + appState.user.prenom;
       }
+
+      // Bloc XP + badges
+      const pts = appState.progress.points || 0;
+      const maxPts = MODULES.length * 70;
+      const pct = Math.min(100, Math.round(pts / maxPts * 100));
+      const earned = appState.progress.badges || [];
+      let topHtml = '<div class="xp-banner"><div class="xp-left"><div class="xp-label">Points XP cumulés</div><div class="xp-value">' + pts + ' <span style="font-size:.9rem;opacity:.8">/ ' + maxPts + ' pts</span></div><div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:' + pct + '%"></div></div></div></div>';
+      topHtml += '<div class="badges-section"><div class="badges-label">Badges obtenus</div><div class="badges-grid">';
+      BADGES.forEach(function(b, i) {
+        const got = earned.includes(i);
+        topHtml += '<span class="badge-chip ' + (got ? 'earned' : 'locked') + '">' + b.icon + ' ' + b.name + '</span>';
+      });
+      topHtml += '</div></div>';
+      document.getElementById('modules-list').insertAdjacentHTML('beforebegin', topHtml);
 
       let html = '';
       MODULES.forEach(function(mod, idx) {
         const available = isModuleAvailable(idx);
         const completed = isModuleCompleted(idx);
         const statusClass = completed ? 'completed' : (available ? 'available' : 'locked');
-        const statusLabel = completed ? 'Termine' : (available ? 'Disponible' : 'Verrouille');
+        const statusLabel = completed ? 'Terminé' : (available ? 'Disponible' : 'Verrouillé');
         const score = appState.progress.quizScores['module' + idx];
         const scoreStr = (completed && score !== undefined) ? 'Score : ' + score + '/5' : '';
 
@@ -1816,55 +1968,56 @@
     // ====================================================
     // ECRAN : CONTENU MODULE
     // ====================================================
-    function renderModuleContent(idx) {
+    function renderModuleContent(idx, sectionIdx) {
+      sectionIdx = sectionIdx || 0;
+      appState.currentSectionIndex = sectionIdx;
       const mod = MODULES[idx];
+      const section = mod.sections[sectionIdx];
+      const total = mod.sections.length;
       const container = document.getElementById('module-content-container');
       document.getElementById('mc-header-title').textContent = 'Module ' + (idx + 1);
-
       const progressPct = Math.round(((idx + 1) / MODULES.length) * 100);
       document.getElementById('mc-progress-bar').style.width = progressPct + '%';
 
-      let sectionsHtml = '';
-      mod.sections.forEach(function(section) {
-        sectionsHtml += '<div class="content-section">';
-        sectionsHtml += '<h3 class="content-section-title">' + section.title + '</h3>';
+      // Barre de navigation sections
+      let dots = '';
+      for (var d = 0; d < total; d++) {
+        const cls = d < sectionIdx ? 'done' : (d === sectionIdx ? 'active' : '');
+        dots += '<span class="section-dot ' + cls + '" onclick="renderModuleContent(' + idx + ',' + d + ')"></span>';
+      }
+      const navBar = '<div class="section-nav-bar"><span class="section-counter">Section ' + (sectionIdx+1) + ' / ' + total + '</span><div class="section-dots">' + dots + '</div></div>';
 
-        section.content.forEach(function(p) {
-          sectionsHtml += '<p>' + p + '</p>';
-        });
+      // Contenu de la section courante
+      let sHtml = '<div class="content-section">';
+      sHtml += '<h3 class="content-section-title">' + section.title + '</h3>';
+      section.content.forEach(function(p) { sHtml += '<p>' + p + '</p>'; });
+      if (section.infoBox) sHtml += '<div class="info-box"><p>' + section.infoBox + '</p></div>';
+      if (section.list) {
+        sHtml += '<ul class="data-list">';
+        section.list.forEach(function(item) { sHtml += '<li>' + item + '</li>'; });
+        sHtml += '</ul>';
+      }
+      if (section.contentAfterList) sHtml += '<p style="margin-top:10px">' + section.contentAfterList + '</p>';
+      sHtml += '</div>';
 
-        if (section.infoBox) {
-          sectionsHtml += '<div class="info-box"><p>' + section.infoBox + '</p></div>';
-        }
-
-        if (section.list) {
-          sectionsHtml += '<ul class="data-list">';
-          section.list.forEach(function(item) {
-            sectionsHtml += '<li>' + item + '</li>';
-          });
-          sectionsHtml += '</ul>';
-        }
-
-        if (section.contentAfterList) {
-          sectionsHtml += '<p style="margin-top:10px;">' + section.contentAfterList + '</p>';
-        }
-
-        sectionsHtml += '</div>';
-      });
+      // Boutons navigation
+      const isLast = sectionIdx === total - 1;
+      const btnPrev = sectionIdx > 0 ? '<button class="btn btn-outline btn-sm" onclick="renderModuleContent(' + idx + ',' + (sectionIdx-1) + ')">← Précédente</button>' : '<button class="btn btn-outline btn-sm" onclick="showScreen(\'modules\')">&#8592; Modules</button>';
+      const btnNext = isLast
+        ? '<button class="btn btn-primary btn-sm" onclick="startQuiz(' + idx + ')">Passer le quiz &#8594;</button>'
+        : '<button class="btn btn-primary btn-sm" onclick="renderModuleContent(' + idx + ',' + (sectionIdx+1) + ')">Suivante &#8594;</button>';
+      const btnRow = '<div class="section-btn-row">' + btnPrev + btnNext + '</div>';
 
       container.innerHTML =
         '<div class="module-header">' +
-          '<div class="module-num-label">Module ' + (idx + 1) + ' sur 5</div>' +
+          '<div class="module-num-label">Module ' + (idx + 1) + ' sur ' + MODULES.length + '</div>' +
           '<h2 class="module-title">' + mod.title + '</h2>' +
           '<p class="module-subtitle">' + mod.subtitle + '</p>' +
         '</div>' +
-        '<div class="module-content-body">' + sectionsHtml + '</div>' +
-        '<div class="module-nav">' +
-          '<button class="btn btn-outline btn-sm" onclick="showScreen(\'modules\')">Retour aux modules</button>' +
-          '<button class="btn btn-primary btn-sm" onclick="startQuiz(' + idx + ')">Passer le quiz</button>' +
-        '</div>';
+        navBar + sHtml + btnRow;
     }
 
+    
     // ====================================================
     // QUIZ
     // ====================================================
@@ -1963,7 +2116,7 @@
       const feedbackBox = document.getElementById('feedback-box');
       feedbackBox.className = 'feedback-box ' + (isCorrect ? 'correct' : 'wrong');
       feedbackBox.innerHTML =
-        '<div class="feedback-title">' + (isCorrect ? 'Bonne reponse !' : 'Mauvaise reponse') + '</div>' +
+        '<div class="feedback-title">' + (isCorrect ? 'Bonne réponse !' : 'Mauvaise réponse') + '</div>' +
         '<div>' + question.explanation + '</div>';
 
       document.getElementById('btn-quiz-validate').classList.add('hidden');
@@ -1999,15 +2152,24 @@
       const score = answers.filter(function(a) { return a.isCorrect; }).length;
       const total = answers.length;
 
-      // Sauvegarder le score et marquer le module comme complete
+      // Sauvegarder le score + XP + badge
       const modKey = 'module' + appState.currentModuleIndex;
       const prevScore = appState.progress.quizScores[modKey];
+      const isFirstCompletion = !appState.progress.completedModules.includes(appState.currentModuleIndex);
       if (prevScore === undefined || score > prevScore) {
         appState.progress.quizScores[modKey] = score;
       }
-
-      if (!appState.progress.completedModules.includes(appState.currentModuleIndex)) {
+      if (isFirstCompletion) {
         appState.progress.completedModules.push(appState.currentModuleIndex);
+        // Attribuer XP : 10 pts par bonne réponse + 20 bonus si parfait
+        const gained = score * 10 + (score === total ? 20 : 0);
+        appState.progress.points = (appState.progress.points || 0) + gained;
+        appState.progress._lastGained = gained;
+        // Attribuer badge
+        if (!appState.progress.badges) appState.progress.badges = [];
+        appState.progress.badges.push(appState.currentModuleIndex);
+      } else {
+        appState.progress._lastGained = 0;
       }
       saveProgress();
 
@@ -2020,18 +2182,30 @@
 
       let title, message;
       if (pct >= 0.8) {
-        title = 'Excellent travail !';
-        message = 'Vous maitrisez bien ce module. ' + (appState.currentModuleIndex < 4 ? 'Le module suivant est desormais debloque.' : 'Vous avez termine la formation !');
+        title = 'Excellent travail !';
+        message = 'Vous maitrisez bien ce module. ' + (appState.currentModuleIndex < 4 ? 'Le module suivant est désormais débloqué.' : 'Vous avez terminé la formation !');
       } else if (pct >= 0.6) {
-        title = 'Bien joue !';
-        message = 'Bonne comprehension du module. ' + (appState.currentModuleIndex < 4 ? 'Le module suivant est debloque.' : 'Formation terminee !');
+        title = 'Bien joué !';
+        message = 'Bonne comprehension du module. ' + (appState.currentModuleIndex < 4 ? 'Le module suivant est débloqué.' : 'Formation terminee !');
       } else {
-        title = 'Module valide';
-        message = 'Ce module recele encore quelques subtilites. N hesitez pas a relire le contenu. ' + (appState.currentModuleIndex < 4 ? 'Module suivant debloque.' : '');
+        title = 'Module validé';
+        message = 'Ce module recèle encore quelques subtilités. N’hésitez pas à relire le contenu. ' + (appState.currentModuleIndex < 4 ? 'Module suivant débloqué.' : '');
       }
 
       document.getElementById('result-title').textContent = title;
       document.getElementById('result-message').textContent = message;
+
+      // Badge + XP gagnés (seulement à la première complétion)
+      const badgeEl = document.getElementById('badge-earned-area');
+      if (badgeEl) {
+        const bidx = appState.currentModuleIndex;
+        const gained = appState.progress._lastGained || 0;
+        if (isFirstCompletion && BADGES[bidx]) {
+          badgeEl.innerHTML = '<div class="badge-earned-box"><div class="badge-earned-icon">' + BADGES[bidx].icon + '</div><div class="badge-earned-lbl">Badge obtenu !</div><div class="badge-earned-name">' + BADGES[bidx].name + '</div><div class="xp-gained">+' + gained + ' XP</div></div>';
+        } else if (!isFirstCompletion) {
+          badgeEl.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:.85rem;margin:8px 0">Module déjà complété — pas de nouveaux points</p>';
+        }
+      }
 
       // Resume des questions
       let summaryHtml = '<div class="summary-title">Detail des reponses</div>';
@@ -2049,7 +2223,7 @@
       const isLast = appState.currentModuleIndex === MODULES.length - 1;
       const btnNext = document.getElementById('btn-next-module');
       if (isLast) {
-        btnNext.textContent = 'Voir mon badge';
+        btnNext.textContent = 'Voir mon diplôme';
         btnNext.onclick = function() { showCompletion(); };
       } else {
         btnNext.textContent = 'Module suivant';
@@ -2089,10 +2263,72 @@
     // ====================================================
     // INITIALISATION
     // ====================================================
-    function init() {
+    // ====================================================
+    // PANNEAU ADMIN
+    // ====================================================
+    function loadAdminData() {
+      if (!db) {
+        document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Firebase non configuré.</td></tr>';
+        return;
+      }
+      Promise.all([
+        db.collection('registrations').orderBy('createdAt','desc').limit(200).get(),
+        db.collection('userProgress').get()
+      ]).then(function(results) {
+        const regSnap = results[0], progSnap = results[1];
+        const progress = {};
+        progSnap.forEach(function(doc) { progress[doc.data().email] = doc.data(); });
+        const rows = [];
+        regSnap.forEach(function(doc) { rows.push(doc.data()); });
+
+        // Stats
+        const totalMods = rows.reduce(function(acc, r) {
+          const p = progress[r.email];
+          return acc + (p ? (p.completedModules || []).length : 0);
+        }, 0);
+        const statsEl = document.getElementById('admin-stats');
+        if (statsEl) {
+          statsEl.innerHTML =
+            '<div class="admin-stat"><div class="admin-stat-n">' + rows.length + '</div><div class="admin-stat-l">Inscrits</div></div>' +
+            '<div class="admin-stat"><div class="admin-stat-n">' + Object.keys(progress).length + '</div><div class="admin-stat-l">Actifs</div></div>' +
+            '<div class="admin-stat"><div class="admin-stat-n">' + (rows.length ? Math.round(totalMods/rows.length*10)/10 : 0) + '</div><div class="admin-stat-l">Modules moy.</div></div>';
+        }
+
+        // Tableau
+        if (!rows.length) {
+          document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Aucun inscrit pour l\'instant.</td></tr>';
+          return;
+        }
+        let html = '';
+        rows.forEach(function(r) {
+          const p = progress[r.email] || {};
+          const mods = (p.completedModules || []).length;
+          const scores = p.quizScores || {};
+          const total = Object.values(scores).reduce(function(a,b){ return a+b; }, 0);
+          const xp = p.points || 0;
+          const date = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR') : '-';
+          html += '<tr><td>' + (r.prenom||'-') + '</td><td style="font-size:.75rem">' + (r.email||'-') + '</td><td style="font-size:.75rem">' + date + '</td>' +
+            '<td><span class="admin-pill">' + mods + ' / ' + MODULES.length + '</span></td>' +
+            '<td>' + (Object.keys(scores).length ? total + ' pts' : '-') + '</td>' +
+            '<td>' + (xp ? xp + ' XP' : '-') + '</td></tr>';
+        });
+        document.getElementById('admin-tbody').innerHTML = html;
+      }).catch(function(e) {
+        document.getElementById('admin-tbody').innerHTML = '<tr><td colspan="6" class="admin-msg">Erreur : ' + e.message + '</td></tr>';
+      });
+    }
+
+        function init() {
+      // Panneau admin via ?admin=wero2025
+      if (window.location.search.indexOf('admin=wero2025') > -1) {
+        showScreen('admin');
+        loadAdminData();
+        return;
+      }
+
       loadProgress();
 
-      // Si l'utilisateur est deja enregistre et a accepte la mise en garde, aller au menu
+      // Si l'utilisateur est déjà enregistré et a accepté la mise en garde, aller au menu
       if (appState.user && appState.progress.warningAccepted) {
         renderModulesMenu();
         showScreen('modules');
@@ -2111,5 +2347,38 @@
 
     init();
   </script>
+
+  <!-- ===================== SCREEN: ADMIN ===================== -->
+  <div id="screen-admin" class="screen">
+    <div class="site-header">
+      <div class="wrapper">
+        <div>
+          <div class="site-header-logo">Administration</div>
+          <div class="site-header-sub">Suivi des apprenants</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showScreen('home')" style="font-size:.8rem;padding:6px 14px">&#8592; Retour</button>
+      </div>
+    </div>
+    <div class="admin-wrap">
+      <div id="admin-stats" class="admin-stats"></div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Email</th>
+              <th>Inscription</th>
+              <th>Modules</th>
+              <th>Score total</th>
+              <th>XP</th>
+            </tr>
+          </thead>
+          <tbody id="admin-tbody">
+            <tr><td colspan="6" class="admin-msg">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
